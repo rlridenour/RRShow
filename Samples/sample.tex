@@ -1,0 +1,64 @@
+\documentclass[aspectratio=169]{beamer}
+\usepackage{pgfpages}
+\setbeameroption{show notes on second screen=right}
+\usetheme{Madrid}
+\title{Reasons and Persons}
+\subtitle{A Sample Dual-Screen Deck}
+\author{R. Ridenour}
+\institute{RRShow Test Fixture}
+\date{\today}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+\note{Open by thanking the department. Mention that the deck was compiled with
+\texttt{show notes on second screen=right}, which is exactly the shape RRShow
+is built to split.}
+
+\begin{frame}{What the Audience Sees}
+  \begin{itemize}
+    \item The left half of every page is the slide.
+    \item It goes to the projector, full bleed.
+    \item Nothing on this half is private.
+  \end{itemize}
+\end{frame}
+\note{This is the notes half. It should never reach the external display.
+\begin{itemize}
+  \item Check that the crop is exact --- no sliver of notes bleeding into the slide.
+  \item Check that the aspect ratio stays 16:9 after cropping.
+\end{itemize}}
+
+\begin{frame}{Three Arguments}
+  \begin{enumerate}
+    \item The appeal to parsimony
+    \item The appeal to explanatory scope
+    \item The appeal to intuition
+  \end{enumerate}
+  \vfill
+  \begin{block}{Key claim}
+    Personal identity is not what matters in survival.
+  \end{block}
+\end{frame}
+\note{Spend the most time on the third argument. Expect pushback on the intuition
+pump; have the teletransporter case ready.
+
+Timing: aim to be here at the twenty minute mark.}
+
+\begin{frame}{A Frame With No Note}
+  Some frames simply have no note attached. The notes half of the page is then
+  blank, and RRShow should render an empty pane rather than failing.
+\end{frame}
+
+\begin{frame}{Conclusion}
+  \begin{itemize}
+    \item Reductionism is defensible.
+    \item The practical upshot is considerable.
+  \end{itemize}
+\end{frame}
+\note{Close on the practical upshot. Take questions.
+
+Remember to press B to black the screen during discussion.}
+
+\end{document}

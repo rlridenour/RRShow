@@ -5,6 +5,7 @@ import SwiftUI
 struct PresenterView: View {
 
     @Environment(PresentationViewModel.self) private var model
+    @Environment(\.openWindow) private var openWindow
 
     var body: some View {
         VStack(spacing: 0) {
@@ -74,6 +75,16 @@ struct PresenterView: View {
             .help("Laser pointer (L)")
             .accessibilityIdentifier(AccessibilityID.Presenter.laserToggle)
 
+            if showsAudienceWindowButton {
+                Button {
+                    openWindow(id: AudienceWindow.id)
+                } label: {
+                    Label("Audience Window", systemImage: "macwindow.on.rectangle")
+                }
+                .help("Open the audience window, then move it to the projector")
+                .accessibilityIdentifier(AccessibilityID.Presenter.openAudienceWindow)
+            }
+
             Button {
                 withAnimation(.snappy(duration: 0.2)) { model.toggleThumbnailBar() }
             } label: {
@@ -88,6 +99,15 @@ struct PresenterView: View {
             presenterLayoutMenu
             LayoutMenu()
         }
+    }
+
+    /// Offered whenever nothing has already claimed an audience scene.
+    ///
+    /// One rule covers both platforms: on iPad a connected display takes the scene and
+    /// the button disappears; on the Mac no scene ever arrives, so it stays available.
+    /// No `#if` needed, and it self-corrects if either platform's behaviour changes.
+    private var showsAudienceWindowButton: Bool {
+        !ExternalDisplayMonitor.shared.isConnected
     }
 
     private var presenterLayoutMenu: some View {

@@ -24,6 +24,7 @@ enum AccessibilityID {
         static let thumbnailsToggle = "presenter.thumbnailsToggle"
         static let timer = "presenter.timer"
         static let close = "presenter.close"
+        static let openAudienceWindow = "presenter.openAudienceWindow"
         /// The live slide surface, for drawing gestures. Published as an accessibility
         /// container — a bare identifier on a SwiftUI stack is not addressable.
         static let slideSurface = "presenter.slideSurface"

@@ -8,6 +8,8 @@ import SwiftUI
 struct MarkupMirrorView: View {
 
     var drawing: PKDrawing
+    /// Changes only when the drawing does, so the canvas can skip re-uploading.
+    var version: Int
     var liveStroke: LiveStroke?
 
     var body: some View {
@@ -16,11 +18,17 @@ struct MarkupMirrorView: View {
 
             ZStack {
                 if width > 0 {
-                    DrawingLayer(
-                        drawing: drawing.transformed(
-                            using: MarkupSpace.transform(toWidth: width)
+                    // No canvas at all until something has been drawn. A `PKCanvasView`
+                    // is Metal-backed, and an empty one still costs the audience display
+                    // a surface to composite on every frame.
+                    if !drawing.strokes.isEmpty {
+                        DrawingLayer(
+                            drawing: drawing.transformed(
+                                using: MarkupSpace.transform(toWidth: width)
+                            ),
+                            version: version
                         )
-                    )
+                    }
 
                     if let liveStroke, liveStroke.isDrawable {
                         LiveStrokeShape(stroke: liveStroke, targetWidth: width)
@@ -36,6 +44,14 @@ struct MarkupMirrorView: View {
 private struct DrawingLayer: UIViewRepresentable {
 
     var drawing: PKDrawing
+    var version: Int
+
+    func makeCoordinator() -> Coordinator { Coordinator() }
+
+    final class Coordinator {
+        var appliedVersion: Int?
+        var appliedWidth: CGFloat = 0
+    }
 
     func makeUIView(context: Context) -> PKCanvasView {
         let canvas = PKCanvasView()
@@ -46,11 +62,23 @@ private struct DrawingLayer: UIViewRepresentable {
         // Match the authoring canvas so ink is not remapped for dark mode.
         canvas.overrideUserInterfaceStyle = .light
         canvas.drawing = drawing
+        context.coordinator.appliedVersion = version
+        context.coordinator.appliedWidth = canvas.bounds.width
         return canvas
     }
 
     func updateUIView(_ canvas: PKCanvasView, context: Context) {
+        // Assigning `drawing` re-renders the canvas's Metal surface. Doing it on every
+        // SwiftUI update — which is what happened before — meant a full re-render each
+        // time anything in the session changed, marks or no marks. Over AirPlay, where
+        // the whole display is being encoded, that is real cost for no change on screen.
+        let width = canvas.bounds.width
+        let widthChanged = abs(width - context.coordinator.appliedWidth) > 0.5
+        guard context.coordinator.appliedVersion != version || widthChanged else { return }
+
         canvas.drawing = drawing
+        context.coordinator.appliedVersion = version
+        context.coordinator.appliedWidth = width
     }
 }
 

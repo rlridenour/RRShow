@@ -142,6 +142,20 @@ struct PresenterView: View {
                 }
             }
 
+            Section("Audience Display") {
+                ForEach(AudienceTransition.allCases) { transition in
+                    Button {
+                        model.audienceTransition = transition
+                    } label: {
+                        Label(
+                            "\(transition.displayName) — \(transition.detail)",
+                            systemImage: model.audienceTransition == transition
+                                ? "checkmark" : "rectangle.on.rectangle"
+                        )
+                    }
+                }
+            }
+
             Section("Appearance") {
                 ForEach(PresenterTheme.allCases) { theme in
                     Button {

@@ -9,9 +9,9 @@ struct AudienceView: View {
 
     @Environment(PresentationViewModel.self) private var model
 
-    /// Short enough to feel immediate from the back of a lecture hall, long enough not
-    /// to flicker.
-    private let transitionDuration: Double = 0.18
+    /// How long the blanking fade takes. Slide changes follow
+    /// `model.audienceTransition`, which defaults to a straight cut on the Mac.
+    private let blankFadeDuration: Double = 0.18
 
     var body: some View {
         ZStack {
@@ -28,7 +28,7 @@ struct AudienceView: View {
                     .transition(.opacity)
             }
         }
-        .animation(.easeOut(duration: transitionDuration), value: model.blankMode)
+        .animation(.easeOut(duration: blankFadeDuration), value: model.blankMode)
         .ignoresSafeArea()
         .statusBarHidden()
         .persistentSystemOverlays(.hidden)
@@ -43,11 +43,12 @@ struct AudienceView: View {
                 pageIndex: model.currentPageIndex,
                 background: .black,
                 cornerRadius: 0,
-                crossfade: transitionDuration
+                crossfade: model.audienceTransition.duration
             )
 
             MarkupMirrorView(
                 drawing: model.currentMarkup,
+                version: model.markupVersion,
                 liveStroke: model.liveStroke
             )
 

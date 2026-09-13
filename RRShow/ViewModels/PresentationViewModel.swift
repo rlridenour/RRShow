@@ -226,6 +226,7 @@ final class PresentationViewModel {
 
         currentPageIndex = clamped
         markupRevision += 1
+        markupVersion += 1
         prefetchNeighbors()
     }
 
@@ -320,6 +321,18 @@ final class PresentationViewModel {
     /// When set, only an Apple Pencil draws — a finger still swipes to change slides.
     var markupPencilOnly = false
 
+    /// How the audience display moves between slides. Persisted.
+    var audienceTransition: AudienceTransition = .restored {
+        didSet { AudienceTransition.store(audienceTransition) }
+    }
+
+    /// Bumped whenever the *displayed* markup changes — a commit, a clear, a page
+    /// change. Distinct from `markupRevision`, which tells the authoring canvas to
+    /// reload; bumping that on a commit would make the canvas reload its own stroke.
+    /// This one lets the audience mirror skip re-uploading an unchanged drawing, which
+    /// is a Metal re-render it would otherwise do on every single view update.
+    private(set) var markupVersion = 0
+
     /// Bumped whenever the canvas must reload from the model rather than the other way
     /// round — a page change, a clear, a new document. Lets the canvas distinguish an
     /// external change from the echo of its own commit.
@@ -377,6 +390,7 @@ final class PresentationViewModel {
         } else {
             markupByPage[currentPageIndex] = drawing
         }
+        markupVersion += 1
         // The committed drawing now contains whatever the preview was standing in for.
         liveStroke = nil
     }
@@ -389,12 +403,14 @@ final class PresentationViewModel {
         markupByPage.removeValue(forKey: currentPageIndex)
         liveStroke = nil
         markupRevision += 1
+        markupVersion += 1
     }
 
     func clearAllMarkup() {
         markupByPage.removeAll()
         liveStroke = nil
         markupRevision += 1
+        markupVersion += 1
     }
 
     // MARK: - Rendering

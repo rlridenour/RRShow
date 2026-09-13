@@ -48,7 +48,16 @@ actor PDFDocumentService {
 
     private var cache: [SlideRenderRequest: CGImage] = [:]
     private var cacheOrder: [SlideRenderRequest] = []
-    private let cacheLimit = 32
+    private var cachedBytes = 0
+
+    /// Budget for rendered pages, in bytes.
+    ///
+    /// Counting entries rather than bytes was the wrong measure: a slide rendered for a
+    /// 1080p projector is about 8 MB, so thirty-odd of them is a quarter of a gigabyte —
+    /// enough to get the app killed for memory mid-talk, which takes the AirPlay session
+    /// with it. This holds the current page and its neighbours at presentation size,
+    /// plus a strip of thumbnails, and no more.
+    private let cacheByteBudget = 96 * 1024 * 1024
 
     init(url: URL) throws {
         guard let document = CGPDFDocument(url as CFURL) else {
@@ -155,6 +164,7 @@ actor PDFDocumentService {
     func clearCache() {
         cache.removeAll()
         cacheOrder.removeAll()
+        cachedBytes = 0
     }
 
     // MARK: - Core Graphics
@@ -247,12 +257,27 @@ actor PDFDocumentService {
     }
 
     private func store(_ image: CGImage, for request: SlideRenderRequest) {
-        cache[request] = image
-        touch(request)
-        while cacheOrder.count > cacheLimit, let oldest = cacheOrder.first {
-            cacheOrder.removeFirst()
-            cache.removeValue(forKey: oldest)
+        if let existing = cache[request] {
+            cachedBytes -= Self.byteSize(of: existing)
         }
+        cache[request] = image
+        cachedBytes += Self.byteSize(of: image)
+        touch(request)
+
+        // Never evict the entry just stored, however large: the caller is about to draw
+        // it, and dropping it would render the same page again on the next frame.
+        while cachedBytes > cacheByteBudget,
+              let oldest = cacheOrder.first,
+              oldest != request {
+            cacheOrder.removeFirst()
+            if let evicted = cache.removeValue(forKey: oldest) {
+                cachedBytes -= Self.byteSize(of: evicted)
+            }
+        }
+    }
+
+    private static func byteSize(of image: CGImage) -> Int {
+        image.bytesPerRow * image.height
     }
 
     private func touch(_ request: SlideRenderRequest) {

@@ -2,6 +2,7 @@ import CoreGraphics
 import Foundation
 import Observation
 import PencilKit
+import UIKit
 
 /// Session state for the deck currently being presented.
 ///
@@ -30,6 +31,19 @@ final class PresentationViewModel {
 
     init() {
         refreshRecentDocuments()
+        observeMemoryWarnings()
+    }
+
+    private func observeMemoryWarnings() {
+        Task { [weak self] in
+            let warnings = NotificationCenter.default.notifications(
+                named: UIApplication.didReceiveMemoryWarningNotification
+            )
+            for await _ in warnings {
+                guard let self else { return }
+                await self.service?.clearCache()
+            }
+        }
     }
 
     // MARK: - Derived state
@@ -112,6 +126,7 @@ final class PresentationViewModel {
             service = loaded.service
             document = loaded.document
             currentPageIndex = 0
+            ScreenSleepGuard.isPresenting = true
             refreshRecentDocuments()
             prefetchNeighbors()
         } catch {
@@ -120,6 +135,7 @@ final class PresentationViewModel {
     }
 
     func closeDocument() {
+        ScreenSleepGuard.isPresenting = false
         service = nil
         document = nil
         currentPageIndex = 0

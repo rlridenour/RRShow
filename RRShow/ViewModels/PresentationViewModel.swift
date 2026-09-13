@@ -26,6 +26,9 @@ final class PresentationViewModel {
     private(set) var isLoading = false
     var errorMessage: String?
 
+    /// In-flight neighbour prefetch, cancelled whenever the page changes again.
+    @ObservationIgnored private var prefetchTask: Task<Void, Never>?
+
     /// Files already imported into the container, newest first.
     private(set) var recentDocuments: [URL] = []
 
@@ -136,6 +139,8 @@ final class PresentationViewModel {
 
     func closeDocument() {
         ScreenSleepGuard.isPresenting = false
+        prefetchTask?.cancel()
+        prefetchTask = nil
         service = nil
         document = nil
         currentPageIndex = 0
@@ -414,28 +419,23 @@ final class PresentationViewModel {
         )
     }
 
-    /// Warms the cache for the pages either side of the current one at a presentation-ish
-    /// width, so an advance lands on an already-rendered slide.
-    private func prefetchNeighbors(pixelWidth: Int = 2048) {
+    /// Warms the cache for the slides either side of the current one, so an advance
+    /// lands on an already-rendered page.
+    ///
+    /// Only one prefetch runs at a time. Without that, clicking quickly through a deck
+    /// spawned a detached task per advance, and each one's renders queued on the
+    /// serialised renderer *ahead of* the slide now in view — the projector waiting on
+    /// work for slides already gone by.
+    private func prefetchNeighbors() {
         guard let service, let document else { return }
         let layout = document.layout
         let candidates = [currentPageIndex + 1, currentPageIndex - 1]
             .filter { document.pageIndices.contains($0) }
+        guard !candidates.isEmpty else { return }
 
-        Task.detached(priority: .utility) {
-            for pageIndex in candidates {
-                for region in [SlideRegion.slide, .notes] {
-                    guard layout.normalizedRect(for: region) != nil else { continue }
-                    await service.prefetch(
-                        SlideRenderRequest(
-                            pageIndex: pageIndex,
-                            region: region,
-                            layout: layout,
-                            pixelWidth: pixelWidth
-                        )
-                    )
-                }
-            }
+        prefetchTask?.cancel()
+        prefetchTask = Task.detached(priority: .utility) {
+            await service.prefetchSlides(pages: candidates, layout: layout)
         }
     }
 }

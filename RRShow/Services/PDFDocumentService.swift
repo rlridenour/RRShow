@@ -46,6 +46,15 @@ actor PDFDocumentService {
 
     private let document: CGPDFDocument
 
+    /// Largest pixel width each region has actually been asked for.
+    ///
+    /// Prefetching needs a size, and guessing one wastes the work entirely: `pixelWidth`
+    /// is part of the cache key, so an image rendered at a width no view requests is
+    /// never read — it only evicts images that are. The largest observed width is the
+    /// audience display's, which is both the most expensive render and the one that has
+    /// to be ready the instant the slide changes.
+    private var largestPixelWidth: [SlideRegion: Int] = [:]
+
     private var cache: [SlideRenderRequest: CGImage] = [:]
     private var cacheOrder: [SlideRenderRequest] = []
     private var cachedBytes = 0
@@ -144,6 +153,10 @@ actor PDFDocumentService {
     }
 
     func image(for request: SlideRenderRequest, scale: CGFloat) throws -> SlideImage {
+        largestPixelWidth[request.region] = max(
+            largestPixelWidth[request.region] ?? 0, request.pixelWidth
+        )
+
         if let cached = cachedImage(for: request) {
             return SlideImage(id: request, cgImage: cached, scale: scale)
         }
@@ -153,18 +166,38 @@ actor PDFDocumentService {
         return SlideImage(id: request, cgImage: cgImage, scale: scale)
     }
 
-    /// Renders without returning anything, to warm the cache for a page the presenter
-    /// is about to reach.
-    func prefetch(_ request: SlideRenderRequest) {
-        guard cachedImage(for: request) == nil else { return }
-        guard let cgImage = try? render(request) else { return }
-        store(cgImage, for: request)
+    /// Warms the cache for pages the presenter is about to reach.
+    ///
+    /// Only the audience slide, and only at the width the audience is actually using:
+    /// that is the render that must not be felt on the projector. The presenter's own
+    /// panes are small enough to draw on demand, and rendering them here would just
+    /// churn the cache.
+    ///
+    /// Cancellation is checked between pages, so paging quickly abandons work for slides
+    /// already left behind instead of queueing it ahead of the slide in view.
+    func prefetchSlides(pages: [Int], layout: SlideLayout) {
+        guard let pixelWidth = largestPixelWidth[.slide], pixelWidth > 0 else { return }
+        guard layout.normalizedRect(for: .slide) != nil else { return }
+
+        for pageIndex in pages {
+            if Task.isCancelled { return }
+            let request = SlideRenderRequest(
+                pageIndex: pageIndex,
+                region: .slide,
+                layout: layout,
+                pixelWidth: pixelWidth
+            )
+            guard cache[request] == nil else { continue }
+            guard let image = try? render(request) else { continue }
+            store(image, for: request)
+        }
     }
 
     func clearCache() {
         cache.removeAll()
         cacheOrder.removeAll()
         cachedBytes = 0
+        largestPixelWidth.removeAll()
     }
 
     // MARK: - Core Graphics

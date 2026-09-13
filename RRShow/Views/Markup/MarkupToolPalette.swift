@@ -15,6 +15,7 @@ struct MarkupToolPalette: View {
                 ) {
                     model.markupTool = tool
                 }
+                .accessibilityIdentifier(AccessibilityID.Markup.tool(tool.rawValue))
             }
 
             divider
@@ -33,6 +34,7 @@ struct MarkupToolPalette: View {
                 model.clearCurrentMarkup()
             }
             .disabled(!model.hasMarkupOnCurrentSlide)
+            .accessibilityIdentifier(AccessibilityID.Markup.clearSlide)
 
             settingsMenu
         }

@@ -24,6 +24,13 @@ enum DebugLaunchOptions {
         return UserDefaults.standard.integer(forKey: "RRShowPageIndex")
     }
 
+    /// Open the deck bundled with the app, without depending on the container's
+    /// contents. This is what the UI tests use: `-RRShowOpenDocument` reads from
+    /// `Documents/Presentations`, which is empty until something has been imported.
+    static var opensBundledSample: Bool {
+        UserDefaults.standard.bool(forKey: "RRShowOpenBundledSample")
+    }
+
     /// Turn the Pencil canvas on at launch.
     static var isMarkupEnabled: Bool {
         UserDefaults.standard.bool(forKey: "RRShowMarkup")

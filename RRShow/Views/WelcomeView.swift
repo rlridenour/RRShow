@@ -69,6 +69,7 @@ struct WelcomeView: View {
             }
             .buttonStyle(.borderedProminent)
             .controlSize(.large)
+            .accessibilityIdentifier(AccessibilityID.Welcome.openPDF)
 
             if model.hasBundledSample {
                 Button {
@@ -79,6 +80,7 @@ struct WelcomeView: View {
                 }
                 .buttonStyle(.bordered)
                 .controlSize(.large)
+                .accessibilityIdentifier(AccessibilityID.Welcome.openSample)
             }
 
             if model.isLoading {

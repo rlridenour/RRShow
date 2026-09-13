@@ -46,6 +46,7 @@ struct PresenterView: View {
             } label: {
                 Label("Close", systemImage: "xmark")
             }
+            .accessibilityIdentifier(AccessibilityID.Presenter.close)
         }
 
         ToolbarItemGroup(placement: .topBarTrailing) {
@@ -58,6 +59,7 @@ struct PresenterView: View {
                 )
             }
             .help("Draw on the slide (M)")
+            .accessibilityIdentifier(AccessibilityID.Presenter.markupToggle)
 
             Button {
                 withAnimation(.snappy(duration: 0.2)) { model.toggleLaser() }
@@ -70,6 +72,7 @@ struct PresenterView: View {
                 )
             }
             .help("Laser pointer (L)")
+            .accessibilityIdentifier(AccessibilityID.Presenter.laserToggle)
 
             Button {
                 withAnimation(.snappy(duration: 0.2)) { model.toggleThumbnailBar() }
@@ -80,6 +83,7 @@ struct PresenterView: View {
                 )
             }
             .help("Show or hide the slide strip (T)")
+            .accessibilityIdentifier(AccessibilityID.Presenter.thumbnailsToggle)
 
             presenterLayoutMenu
             LayoutMenu()

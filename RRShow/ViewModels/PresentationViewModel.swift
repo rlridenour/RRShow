@@ -150,10 +150,14 @@ final class PresentationViewModel {
 #if DEBUG
     /// Applies `DebugLaunchOptions` on first appearance. DEBUG builds only.
     func applyDebugLaunchOptions() async {
-        guard let name = DebugLaunchOptions.documentName else { return }
-        guard let directory = try? DocumentImporter.presentationsDirectory() else { return }
-
-        await open(localURL: directory.appendingPathComponent(name))
+        if DebugLaunchOptions.opensBundledSample {
+            await openBundledSample()
+        } else if let name = DebugLaunchOptions.documentName,
+                  let directory = try? DocumentImporter.presentationsDirectory() {
+            await open(localURL: directory.appendingPathComponent(name))
+        } else {
+            return
+        }
 
         if let pageIndex = DebugLaunchOptions.pageIndex {
             go(to: pageIndex)

@@ -17,6 +17,7 @@ struct TransportBar: View {
             }
             .disabled(!model.canGoToPreviousPage)
             .keyboardShortcut(.leftArrow, modifiers: .command)
+            .accessibilityIdentifier(AccessibilityID.Presenter.previousSlide)
 
             Button {
                 model.goToNextPage()
@@ -26,6 +27,7 @@ struct TransportBar: View {
             }
             .disabled(!model.canGoToNextPage)
             .keyboardShortcut(.rightArrow, modifiers: .command)
+            .accessibilityIdentifier(AccessibilityID.Presenter.nextSlide)
 
             Button {
                 isShowingSlideGrid = true
@@ -35,6 +37,7 @@ struct TransportBar: View {
                     .frame(minWidth: 72)
             }
             .help("Go to slide")
+            .accessibilityIdentifier(AccessibilityID.Presenter.pagePosition)
 
             if model.pageCount > 1 {
                 Slider(
@@ -73,6 +76,7 @@ struct TransportBar: View {
             }
             .tint(model.blankMode == .black ? .accentColor : nil)
             .help("Black the audience screen (B)")
+            .accessibilityIdentifier(AccessibilityID.Presenter.blankBlack)
 
             Button {
                 withAnimation(.easeOut(duration: 0.15)) { model.toggleBlank(.white) }
@@ -81,6 +85,7 @@ struct TransportBar: View {
             }
             .tint(model.blankMode == .white ? .accentColor : nil)
             .help("White the audience screen (W)")
+            .accessibilityIdentifier(AccessibilityID.Presenter.blankWhite)
         }
     }
 }

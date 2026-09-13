@@ -44,6 +44,12 @@ struct SlidePaneView: View {
         }
         // While the canvas is live it owns the touches, except in Pencil-only mode where
         // a finger is still free to page the deck.
+        // `children: .contain` publishes the pane as an addressable container while
+        // leaving what is inside it accessible.
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier(
+            isMarkupSurface ? AccessibilityID.Presenter.slideSurface : ""
+        )
         .gesture(
             swipeGesture,
             isEnabled: allowsSwipeNavigation

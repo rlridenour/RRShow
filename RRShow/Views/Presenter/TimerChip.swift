@@ -20,6 +20,7 @@ struct TimerChip: View {
         }
         .menuStyle(.borderlessButton)
         .menuIndicator(.hidden)
+        .accessibilityIdentifier(AccessibilityID.Presenter.timer)
     }
 
     private var chip: some View {

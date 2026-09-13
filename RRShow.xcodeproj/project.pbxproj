@@ -6,10 +6,37 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXContainerItemProxy section */
+		AA0000000000000000000908 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AA0000000000000000000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AA0000000000000000000501;
+			remoteInfo = RRShow;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		AA0000000000000000000301 /* RRShow.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RRShow.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA0000000000000000000302 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AA0000000000000000000303 /* RRShow.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RRShow.entitlements; sourceTree = "<group>"; };
+		AA0000000000000000000902 /* RRShowUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RRShowUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		AA0000000000000000000101 /* RRShow */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = RRShow;
+			sourceTree = "<group>";
+		};
+		AA0000000000000000000906 /* RRShowUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = RRShowUITests;
+			sourceTree = "<group>";
+		};
+		AA0000000000000000000907 /* Shared */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Shared;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -22,19 +49,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		AA0000000000000000000904 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
-
-/* Begin PBXFileReference section */
-		AA0000000000000000000301 /* RRShow.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RRShow.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		AA0000000000000000000302 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		AA0000000000000000000303 /* RRShow.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RRShow.entitlements; sourceTree = "<group>"; };
-/* End PBXFileReference section */
 
 /* Begin PBXGroup section */
 		AA0000000000000000000401 = {
 			isa = PBXGroup;
 			children = (
 				AA0000000000000000000101 /* RRShow */,
+				AA0000000000000000000906 /* RRShowUITests */,
+				AA0000000000000000000907 /* Shared */,
 				AA0000000000000000000403 /* Config */,
 				AA0000000000000000000402 /* Products */,
 			);
@@ -44,6 +74,7 @@
 			isa = PBXGroup;
 			children = (
 				AA0000000000000000000301 /* RRShow.app */,
+				AA0000000000000000000902 /* RRShowUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -74,6 +105,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				AA0000000000000000000101 /* RRShow */,
+				AA0000000000000000000907 /* Shared */,
 			);
 			name = RRShow;
 			packageProductDependencies = (
@@ -81,6 +113,30 @@
 			productName = RRShow;
 			productReference = AA0000000000000000000301 /* RRShow.app */;
 			productType = "com.apple.product-type.application";
+		};
+		AA0000000000000000000901 /* RRShowUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AA0000000000000000000910 /* Build configuration list for PBXNativeTarget "RRShowUITests" */;
+			buildPhases = (
+				AA0000000000000000000903 /* Sources */,
+				AA0000000000000000000904 /* Frameworks */,
+				AA0000000000000000000905 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				AA0000000000000000000909 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				AA0000000000000000000906 /* RRShowUITests */,
+				AA0000000000000000000907 /* Shared */,
+			);
+			name = RRShowUITests;
+			packageProductDependencies = (
+			);
+			productName = RRShowUITests;
+			productReference = AA0000000000000000000902 /* RRShowUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
 
@@ -94,6 +150,10 @@
 				TargetAttributes = {
 					AA0000000000000000000501 = {
 						CreatedOnToolsVersion = 26.0;
+					};
+					AA0000000000000000000901 = {
+						CreatedOnToolsVersion = 26.0;
+						TestTargetID = AA0000000000000000000501;
 					};
 				};
 			};
@@ -112,12 +172,20 @@
 			projectRoot = "";
 			targets = (
 				AA0000000000000000000501 /* RRShow */,
+				AA0000000000000000000901 /* RRShowUITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		AA0000000000000000000602 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AA0000000000000000000905 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -134,7 +202,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		AA0000000000000000000903 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		AA0000000000000000000909 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AA0000000000000000000501 /* RRShow */;
+			targetProxy = AA0000000000000000000908 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		AA0000000000000000000801 /* Debug */ = {
@@ -209,6 +292,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = GAP8D9K29H;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Config/Info.plist;
@@ -244,6 +328,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = GAP8D9K29H;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Config/Info.plist;
@@ -270,6 +355,42 @@
 			};
 			name = Release;
 		};
+		AA0000000000000000000911 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 0.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.rlridenour.RRShowUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = RRShow;
+			};
+			name = Debug;
+		};
+		AA0000000000000000000912 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 0.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.rlridenour.RRShowUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = RRShow;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -287,6 +408,15 @@
 			buildConfigurations = (
 				AA0000000000000000000801 /* Debug */,
 				AA0000000000000000000802 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AA0000000000000000000910 /* Build configuration list for PBXNativeTarget "RRShowUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA0000000000000000000911 /* Debug */,
+				AA0000000000000000000912 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

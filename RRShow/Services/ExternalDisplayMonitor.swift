@@ -48,4 +48,12 @@ final class ExternalDisplayMonitor {
     func clearDisplayLoss() {
         lostDisplayAt = nil
     }
+
+#if DEBUG
+    /// Pretends a display just vanished, so the banner can be inspected without one.
+    func simulateDisplayLoss(at date: Date = Date()) {
+        displays.removeAll()
+        lostDisplayAt = date
+    }
+#endif
 }

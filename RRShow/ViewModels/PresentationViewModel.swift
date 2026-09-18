@@ -194,6 +194,12 @@ final class PresentationViewModel {
         if DebugLaunchOptions.isLaserEnabled {
             slideInteraction = .laser
         }
+        if DebugLaunchOptions.simulatesDisplayLoss {
+            // After the deck opens: opening one clears the loss, by design.
+            ExternalDisplayMonitor.shared.simulateDisplayLoss(
+                at: Date().addingTimeInterval(-42)
+            )
+        }
     }
 #endif
 

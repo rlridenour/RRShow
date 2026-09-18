@@ -46,5 +46,14 @@ enum DebugLaunchOptions {
         guard let raw = UserDefaults.standard.string(forKey: "RRShowBlankMode") else { return nil }
         return BlankMode(rawValue: raw)
     }
+
+    /// Show the "audience display lost" banner at launch.
+    ///
+    /// The banner is otherwise reachable only by attaching a real display and taking it
+    /// away again, which needs hardware — or a Simulator with an external display, which
+    /// not every install has. This makes it inspectable from a script.
+    static var simulatesDisplayLoss: Bool {
+        UserDefaults.standard.bool(forKey: "RRShowSimulateDisplayLoss")
+    }
 }
 #endif

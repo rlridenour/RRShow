@@ -130,6 +130,8 @@ final class PresentationViewModel {
             document = loaded.document
             currentPageIndex = 0
             ScreenSleepGuard.isPresenting = true
+            // A display lost before this deck was opened is old news.
+            ExternalDisplayMonitor.shared.clearDisplayLoss()
             refreshRecentDocuments()
             prefetchNeighbors()
         } catch {

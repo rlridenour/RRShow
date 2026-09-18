@@ -7,6 +7,8 @@ struct PresenterView: View {
     @Environment(PresentationViewModel.self) private var model
     @Environment(\.openWindow) private var openWindow
 
+    private var monitor: ExternalDisplayMonitor { .shared }
+
     var body: some View {
         VStack(spacing: 0) {
             PresenterLayoutContainer()
@@ -18,6 +20,19 @@ struct PresenterView: View {
                             .transition(.move(edge: .bottom).combined(with: .opacity))
                     }
                 }
+                .overlay(alignment: .top) {
+                    // Only while nothing has replaced the lost display: a reconnect
+                    // clears the timestamp, so the banner takes itself down.
+                    if let lostAt = monitor.lostDisplayAt, !monitor.isConnected {
+                        AudienceDisplayLostBanner(lostAt: lostAt) {
+                            monitor.clearDisplayLoss()
+                        }
+                        .padding(.top, 10)
+                        .padding(.horizontal, 16)
+                        .transition(.move(edge: .top).combined(with: .opacity))
+                    }
+                }
+                .animation(.snappy(duration: 0.25), value: monitor.lostDisplayAt)
 
             if model.showsThumbnailBar, model.pageCount > 1 {
                 Divider()

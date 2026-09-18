@@ -1,3 +1,4 @@
+import os
 import SwiftUI
 import UIKit
 
@@ -44,6 +45,7 @@ final class ExternalDisplaySceneDelegate: NSObject, UIWindowSceneDelegate {
         self.window = window
 
         MainActor.assumeIsolated {
+            Self.log("connected", windowScene)
             ExternalDisplayMonitor.shared.displayConnected(windowScene)
         }
     }
@@ -57,6 +59,7 @@ final class ExternalDisplaySceneDelegate: NSObject, UIWindowSceneDelegate {
     ) {
         window?.frame = windowScene.coordinateSpace.bounds
         MainActor.assumeIsolated {
+            Self.log("updated", windowScene)
             ExternalDisplayMonitor.shared.displayConnected(windowScene)
         }
     }
@@ -64,8 +67,32 @@ final class ExternalDisplaySceneDelegate: NSObject, UIWindowSceneDelegate {
     func sceneDidDisconnect(_ scene: UIScene) {
         guard let windowScene = scene as? UIWindowScene else { return }
         MainActor.assumeIsolated {
+            // The app state is the one fact that separates "the link dropped" from
+            // "the app was sent to the background": the scene goes away either way,
+            // but only the second one happens while the app is not active.
+            Self.log("disconnected", windowScene)
             ExternalDisplayMonitor.shared.displayDisconnected(windowScene)
         }
         window = nil
+    }
+
+    // MARK: - Diagnostics
+
+    @MainActor
+    private static func log(_ event: String, _ windowScene: UIWindowScene) {
+        let size = windowScene.coordinateSpace.bounds.size
+        DiagnosticLog.audienceDisplay.notice(
+            "Audience scene \(event, privacy: .public): \(Int(size.width))×\(Int(size.height)) pt, app \(appState, privacy: .public), deck open \(PresentationViewModel.shared.hasDocument)"
+        )
+    }
+
+    @MainActor
+    private static var appState: String {
+        switch UIApplication.shared.applicationState {
+        case .active: "active"
+        case .inactive: "inactive"
+        case .background: "background"
+        @unknown default: "unknown"
+        }
     }
 }

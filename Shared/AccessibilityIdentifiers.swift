@@ -25,6 +25,9 @@ enum AccessibilityID {
         static let timer = "presenter.timer"
         static let close = "presenter.close"
         static let openAudienceWindow = "presenter.openAudienceWindow"
+        /// Banner shown when the last audience display disconnects mid-deck.
+        static let audienceDisplayLost = "presenter.audienceDisplayLost"
+        static let audienceDisplayLostDismiss = "presenter.audienceDisplayLost.dismiss"
         /// The live slide surface, for drawing gestures. Published as an accessibility
         /// container — a bare identifier on a SwiftUI stack is not addressable.
         static let slideSurface = "presenter.slideSurface"

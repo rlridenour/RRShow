@@ -14,6 +14,7 @@ struct RRShowApp: App {
             RootView()
                 .environment(model)
                 .preferredColorScheme(model.theme.colorScheme)
+                .audienceDisplay(model)
                 // The audience display follows the presenter scene out of the
                 // foreground, so this is the other half of the disconnect story.
                 .onChange(of: scenePhase) { _, phase in
@@ -28,14 +29,14 @@ struct RRShowApp: App {
 
         // A second window carrying the audience view.
         //
-        // On iPadOS a connected display gets its own scene automatically, via
-        // `ExternalDisplaySceneDelegate`. On Mac Catalyst no such scene arrives — an
-        // attached display simply never reaches the app — so the audience output has to
-        // be a window the presenter places: drag it to the projector and full-screen it
-        // there, the way every other Mac presentation app works.
+        // On iPadOS a connected display reaches the app on its own — as a scene accessory
+        // from iOS 27, as an external-display scene before that. On Mac Catalyst neither
+        // happens: an attached display simply never reaches the app, so the audience
+        // output has to be a window the presenter places, dragged to the projector and
+        // full-screened there, the way every other Mac presentation app works.
         //
         // It is a plain `WindowGroup` rather than anything display-aware, so it is also
-        // the fallback on iPad if the automatic scene ever fails to appear.
+        // the fallback on iPad if the automatic path ever fails to appear.
         WindowGroup(id: AudienceWindow.id) {
             AudienceView()
                 .environment(model)

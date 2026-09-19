@@ -5,23 +5,18 @@ import os
 /// Records what the app can see of an attached display, and nothing else.
 ///
 /// This exists because of a failure that is invisible from the lectern and leaves nothing
-/// behind. iPadOS decides whether an app may have its own scene on an attached display by
-/// looking at the SDK its binary was linked against; since the stable release that
-/// followed the iPadOS public beta, a binary linked against the iOS 27 SDK is not offered
-/// one. SpringBoard nominates the app to own the display and then has nothing to host —
+/// behind. From iOS 27 the audience display is a scene accessory the app registers — see
+/// `View.audienceDisplay(_:)` — and an app that registers none is simply mirrored onto the
+/// projector: notes, next slide, controls and all. The system says nothing about it. The
+/// only trace is on the other side, in SpringBoard's log:
 ///
 ///     [DisplayControlling] Updating current non interactive presentation
 ///                          from nothing to app<com.rlridenour.RRShow>
 ///     [DisplayControlling] [(null)] Stop hosting non interactive scene
 ///
-/// — and the projector quietly shows the presenter's own screen instead: notes, next
-/// slide, controls and all. `Scripts/install-device.sh` is the workaround.
-///
-/// Nothing here can fix that; the scene is the system's to create, and asking for it
-/// outright is refused ("the requested role
-/// UIWindowSceneSessionRoleExternalDisplayNonInteractive is not supported"). What it can
-/// do is leave a record, so the next time the projector shows the wrong thing there is
-/// something in the log to read rather than three days of guessing.
+/// Diagnosing that from the app's own silence took a day. One line per look is cheap
+/// insurance against repeating it.
+
 @MainActor
 enum AudienceDisplayClaim {
 

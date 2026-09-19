@@ -20,6 +20,9 @@ struct RRShowApp: App {
                     DiagnosticLog.lifecycle.notice(
                         "Presenter scene \(Self.describe(phase), privacy: .public), deck open \(model.hasDocument)"
                     )
+                    // A display attached while the app was away leaves nothing behind to
+                    // notice on the way back, so re-check on every return to the front.
+                    if phase == .active { AudienceDisplayClaim.start() }
                 }
         }
 
